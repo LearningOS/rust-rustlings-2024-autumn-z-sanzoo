@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -36,8 +35,50 @@ where
         self.len() == 0
     }
 
+    // pub fn pr(&self) {
+    //     for (index, element) in self.items.iter().enumerate() {
+    //         println!("Element at index {} is: {}", index, element);
+    //     }
+    // }
+
+    fn heapify_down(&mut self, n: usize, i: usize) {
+        let mut best = i;
+        let left = i*2;
+        let right = i*2 + 1;
+
+        if left <= n && (self.comparator)(&self.items[left], &self.items[best]) {
+            best = left;
+        }
+
+        if right <= n && (self.comparator)(&self.items[right], &self.items[best]) {
+            best = right;
+        }
+
+        if best != i {
+            self.items.swap(best, i);
+            self.heapify_down( n, best);
+        }
+    }
+    fn heapify_up(&mut self, n: usize, i: usize) {
+        let mut kid = i;
+
+        while kid > 1 {
+            let mut parent = self.parent_idx(kid);
+            if (self.comparator)(&self.items[kid], &self.items[parent]){
+                self.items.swap(kid, parent);
+            } else {break}
+            kid = parent;
+        }
+
+    }
+
     pub fn add(&mut self, value: T) {
+        
         //TODO
+        self.count += 1;
+        self.items.push(value);
+        self.heapify_up(self.count, self.count)
+
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -84,7 +125,16 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
+        // 获取最大的
+        // 等价于删除最大的
         //TODO
+        if self.count > 0 {
+            self.items.swap(1,self.count);
+            self.count -= 1;
+            let re = self.items.pop();
+            self.heapify_down(self.count, 1);
+            return re
+        }
 		None
     }
 }

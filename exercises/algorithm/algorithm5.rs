@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -31,6 +30,33 @@ impl Graph {
 		//TODO
 
         let mut visit_order = vec![];
+        let mut visited = vec![false; self.adj.len()];
+
+        let mut queue = VecDeque::new();
+
+        queue.push_back(start);
+        visited[start] = true;
+        visit_order.push(start);
+
+        while let Some(index) = queue.pop_front() {
+            // pop函数返回的是可变引用
+            // while let Some(i) = self.adj[index].pop() {
+            //     // let num = i.clone();
+            //     queue.push_back(i);
+            //     visited[i] = true;
+            //     visit_order.push(i);
+            // }
+
+            for &neighbor in & self.adj[index] {
+                if visited[neighbor] != true {
+                    queue.push_back(neighbor);
+                    visited[neighbor] = true;
+                    visit_order.push(neighbor);
+                }
+            }
+
+        }
+
         visit_order
     }
 }

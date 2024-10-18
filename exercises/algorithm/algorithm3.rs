@@ -3,10 +3,46 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
+fn heapify<T>(array: &mut [T], n: usize, i: usize) 
+where
+    T: std::cmp::PartialOrd,
+{
+    let mut largest = i;
+    let left = 2*i;
+    let right = 2*i + 1;
+
+    if left < n && array[left] > array[largest] {
+        largest = left;
+    }
+
+    if right < n && array[right] > array[largest] {
+        largest = right;
+    }
+
+    if largest != i {
+        array.swap(i, largest);
+        heapify(array, n, largest);
+    }
+}
+
+fn sort<T>(array: &mut [T])
+where
+    T: std::cmp::PartialOrd ,
+{
 	//TODO
+
+    let n = array.len();
+
+    for i in (0..n/2).rev() {
+        heapify(array,  n, i);
+    }
+
+    for i in (0..n).rev() {
+        array.swap(0, i);
+        heapify(array, i, 0);
+    }
+
 }
 #[cfg(test)]
 mod tests {

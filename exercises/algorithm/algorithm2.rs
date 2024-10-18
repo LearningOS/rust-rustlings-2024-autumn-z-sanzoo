@@ -2,11 +2,11 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::mem::swap;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -45,6 +45,16 @@ impl<T> LinkedList<T> {
             end: None,
         }
     }
+}
+
+impl<T: std::fmt::Display> LinkedList<T> {
+    // pub fn new() -> Self {
+    //     Self {
+    //         length: 0,
+    //         start: None,
+    //         end: None,
+    //     }
+    // }
 
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
@@ -74,6 +84,29 @@ impl<T> LinkedList<T> {
     }
 	pub fn reverse(&mut self){
 		// TODO
+        let mut cur = self.start;
+        if cur.is_some() {
+            loop {
+                
+                let mut node_a = unsafe {cur.unwrap().as_mut()};
+                let node_next = unsafe { node_a.next };
+
+                swap(&mut node_a.next, &mut node_a.prev);
+
+                if node_a.next.is_some() {
+                    unsafe {println!("cur = {}, now next = {}",node_a.val, node_a.next.unwrap().as_ref().val);}
+                } 
+
+                if cur == self.end {
+                    break;
+                }
+                cur = node_next;
+
+            }
+            unsafe {println!("start = {}, end = {}",self.start.unwrap().as_ref().val, self.end.unwrap().as_ref().val);}
+            swap(&mut self.start, &mut self.end);
+        }
+
 	}
 }
 

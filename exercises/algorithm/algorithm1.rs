@@ -2,10 +2,10 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
+// use std::cmp::PartialOrd;
 use std::vec::*;
 
 #[derive(Debug)]
@@ -35,6 +35,8 @@ impl<T> Default for LinkedList<T> {
     }
 }
 
+
+// 为什么new函数要单独拉出来，为什么指定实现Clone会编译失败
 impl<T> LinkedList<T> {
     pub fn new() -> Self {
         Self {
@@ -43,6 +45,16 @@ impl<T> LinkedList<T> {
             end: None,
         }
     }
+}
+
+impl<T: Clone> LinkedList<T> {
+    // pub fn new() -> Self {
+    //     Self {
+    //         length: 0,
+    //         start: None,
+    //         end: None,
+    //     }
+    // }
 
     pub fn add(&mut self, obj: T) {
         let mut node = Box::new(Node::new(obj));
@@ -70,13 +82,68 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where T:Ord,
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		
+        let mut merged_l = Self::new();
+        let mut a = list_a.start;
+        let mut b = list_b.start;
+
+        while a.is_some() && b.is_some() {
+            let node_a = unsafe { a.unwrap().as_ref()};
+            let node_b = unsafe { b.unwrap().as_ref()};
+
+            if node_a.val <  node_b.val {
+                merged_l.add(node_a.val.clone());
+                a = unsafe { node_a.next};
+            } else {
+                merged_l.add(node_b.val.clone());
+                b = unsafe { node_b.next};
+            }
         }
+
+        while a.is_some() {
+            let node_a = unsafe { a.unwrap().as_ref()};
+            merged_l.add(node_a.val.clone());
+            a = unsafe { node_a.next};
+        }
+
+        while b.is_some() {
+            let node_b = unsafe { b.unwrap().as_ref()};
+            merged_l.add(node_b.val.clone());
+            b = unsafe { node_b.next};
+        }
+        merged_l
+
+        // let mut index_a: i32 = 0;
+        // let mut index_b: i32 = 0;
+        // while index_a < list_a.length as i32 && index_b < list_b.length as i32 {
+        //     let t_a = *list_a.get(index_a).unwrap();
+        //     let t_b = *list_b.get(index_b).unwrap();
+        //     if t_a < t_b {
+        //         result.add(t_a);
+        //         index_a += 1;
+        //     } else {
+        //         result.add(t_b);
+        //         index_b += 1;
+        //     }
+        //     result.length += 1;
+        // }
+        // if index_a == list_a.length {
+        //     while index_b < list_b.length as i32 {
+        //         result.add(list_b.get(index_b));
+        //         index_b += 1;
+        //         result.length += 1;
+        //     }
+        // }
+        // if index_b == list_b.length {
+        //     while index_a < list_a.length  as i32 {
+        //         result.add(list_a.get(index_a));
+        //         index_a += 1;
+        //         result.length += 1;
+        //     }
+        // }
 	}
 }
 
